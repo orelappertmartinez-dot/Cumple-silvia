@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escáner de Silvia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #2c1810, #4d1a2a, #2c1810);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        h1 {
+            font-family: 'Pacifico', cursive;
+            color: #ffd700;
+            text-align: center;
+            font-size: clamp(2.5em, 6vw, 3.5em);
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+            margin-bottom: 20px;
+        }
+
+        .scanner-container {
+            width: 100%;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 25px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            text-align: center;
+        }
+
+        #reader {
+            width: 100%;
+            border-radius: 15px;
+            overflow: hidden;
+            border: none !important;
+            background: #1a0c06;
+        }
+
+        /* Modificamos los botones de la propia librería de escaneo para que sean dorados */
+        #reader button {
+            background: #ffd700 !important;
+            color: #2c1810 !important;
+            border: none !important;
+            padding: 12px 20px !important;
+            border-radius: 10px !important;
+            font-weight: bold !important;
+            cursor: pointer !important;
+            margin: 10px auto !important;
+            font-family: 'Poppins', sans-serif !important;
+            text-transform: uppercase;
+            font-size: 0.9em;
+        }
+
+        #reader select {
+            background: rgba(0,0,0,0.5) !important;
+            color: #fff !important;
+            border: 1px solid #ffd700 !important;
+            padding: 8px !important;
+            border-radius: 8px !important;
+            margin: 10px 0 !important;
+        }
+
+        .result-box {
+            display: none;
+            animation: popIn 0.8s ease forwards;
+        }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .final-msg {
+            font-family: 'Pacifico', cursive;
+            color: #ffd700;
+            font-size: 2.2em;
+            margin: 20px 0;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .jamon-img {
+            width: 100%;
+            border-radius: 15px;
+            border: 3px solid #ffd700;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>¡Desafío QR!</h1>
+
+    <div class="scanner-container">
+        <div id="scanner-view">
+            <p>Apunta con tu cámara al código QR para revelar el tesoro final:</p>
+            <div id="reader"></div>
+        </div>
+
+        <div id="result-view" class="result-box">
+            <div class="final-msg">¡Mira detrás de la silla de Daniela! 🎁</div>
+            <img src="https://vigoalminuto.com/wp-content/uploads/2015/12/jamon.jpg" class="jamon-img" alt="Pata de jamón">
+            <p style="margin-top: 15px; font-weight: 600;">¡Has superado todas las pruebas!</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        // Inicializamos el plugin de cámara
+        const html5QrcodeScanner = new Html5QrcodeScanner(
+            "reader", 
+            { fps: 15, qrbox: { width: 250, height: 250 } }
+        );
+
+        function onScanSuccess(decodedText, decodedResult) {
+            // El código comprueba si el QR leído contiene la palabra "daniela" o la frase original
+            const scanData = decodedText.toLowerCase().trim();
+
+            if (scanData.includes("daniela") || scanData.includes("silla") || scanData.includes("escritorio")) {
+                // Frenamos el escáner para que no siga leyendo en bucle
+                html5QrcodeScanner.clear();
+
+                // Escondemos la cámara y mostramos el Jamón con tu Frase
+                document.getElementById('scanner-view').classList.add('hidden');
+                document.getElementById('result-view').style.display = 'block';
+
+                // Disparamos el confeti dorado
+                confetti({
+                    particleCount: 250,
+                    spread: 90,
+                    origin: { y: 0.6 },
+                    colors: ['#ffd700', '#ffffff', '#ffb300']
+                });
+            }
+        }
+
+        function onScanFailure(error) {
+            // Se ignora el fallo. Es normal que salte milisegundo a milisegundo mientras no encuentre un QR.
+        }
+
+        // Arrancamos el renderizado
+        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+    </script>
+</body>
+</html>

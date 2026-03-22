@@ -252,24 +252,25 @@
     setInterval(updateCounters, 1000);
     updateCounters();
 
-    // --- LÓGICA DE JUEGOS ---
-    function clean(t) { return t.toLowerCase().trim().replace(/[!¡]/g, ""); }
+// --- LÓGICA DE JUEGOS CORREGIDA ---
+function clean(t) { 
+    return t.toLowerCase().trim().replace(/[!¡]/g, ""); 
+}
 
-    function check1() {
-        if(clean(document.getElementById('in1').value) === "mira debajo de tu escritorio") {
-            document.getElementById('step1').classList.add('hidden');
-            document.getElementById('step2').classList.remove('hidden');
-            confetti();
-        } else { alert("¡Frase incorrecta!"); }
-    }
+function check1() {
+    const sol1 = "mira debajo de tu escritorio";
+    const valorS1 = document.getElementById('in1').value;
 
-    function check2() {
-        if(clean(document.getElementById('in2').value) === "mira detras de la silla de daniela") {
-            document.getElementById('step2').classList.add('hidden');
-            document.getElementById('final').classList.remove('hidden');
-            confetti({ particleCount: 300, spread: 100 });
-        } else { alert("¡Ese no es el código del QR!"); }
+    if(clean(valorS1) === sol1) {
+        // En lugar de mostrar el Paso 2, saltamos directamente al archivo del escáner
+        window.location.href = "lector.html"; 
+    } else { 
+        alert("Código incorrecto, ¡revisa el cifrado!"); 
     }
+}
+
+// La función check2 ya no sería necesaria si rediriges desde la 1, 
+// pero puedes borrarla para limpiar el código.
 </script>
 
 </body>
